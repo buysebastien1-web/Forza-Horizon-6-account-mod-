@@ -454,4 +454,42 @@
 
             document.getElementById('paypal-button-container').innerHTML = '';
 
-            if
+            if (window.paypal) {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                payee: {
+                                    email_address: PAYPAL_RECEIVER_EMAIL
+                                },
+                                amount: {
+                                    value: selectedProduct.price.toFixed(2)
+                                },
+                                description: `Achat Compte Forza Horizon 6 - ${selectedProduct.title}`
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            closeModal('checkout-modal');
+                            document.getElementById('account-credentials').innerHTML = `
+                                <div><strong>Statut :</strong> Payé à ${PAYPAL_RECEIVER_EMAIL}</div>
+                                <div><strong>Compte :</strong> ${selectedProduct.title}</div>
+                                <div><strong>Login :</strong> fh6_${Math.floor(Math.random()*10000)}@outlook.com</div>
+                                <div><strong>Mot de passe :</strong> Pass_${Math.random().toString(36).slice(-8)}</div>
+                                <div><strong>Transaction ID :</strong> ${details.id}</div>
+                            `;
+                            openModal('success-modal');
+                        });
+                    }
+                }).render('#paypal-button-container');
+            }
+
+            openModal('checkout-modal');
+        }
+
+        renderProducts(products);
+        checkUserSession();
+    </script>
+</body>
+</html>
