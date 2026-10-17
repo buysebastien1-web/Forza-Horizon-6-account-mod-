@@ -27,8 +27,8 @@
     </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- SDK PayPal (Client ID Sandbox/Demo) -->
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=EUR"></script>
+    <!-- SDK PayPal (Remplacez client-id=sb par votre Client ID PayPal) -->
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-amber-500 selection:text-black">
 
@@ -55,12 +55,6 @@
                     <span>Support 24/7</span>
                 </div>
 
-                <!-- Panier indicator -->
-                <button onclick="toggleCartModal()" class="relative p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-slate-300 transition">
-                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                    <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-amber-500 text-slate-950 font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
-                </button>
-
                 <!-- Auth container (Dynamic) -->
                 <div id="auth-actions" class="flex items-center space-x-2">
                     <button onclick="openModal('login-modal')" class="text-slate-300 hover:text-white px-3 py-1.5 text-sm font-medium transition">
@@ -79,7 +73,6 @@
                     </button>
                     <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-2 z-50">
                         <a href="#" class="block px-4 py-2 text-xs text-slate-400 hover:bg-slate-800 hover:text-white">Mon Compte</a>
-                        <a href="#" onclick="openModal('orders-modal'); return false;" class="block px-4 py-2 text-xs text-slate-400 hover:bg-slate-800 hover:text-white">Mes Achats</a>
                         <hr class="border-slate-800 my-1">
                         <button onclick="logout()" class="w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-slate-800">Déconnexion</button>
                     </div>
@@ -95,7 +88,7 @@
                 <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center font-bold text-slate-950 text-xs">FH6</div>
                 <h1 class="font-bold text-lg text-white">Forza Horizon 6</h1>
             </div>
-            <div class="text-xs text-slate-400">Marketplace sécurisée & Paiement PayPal instantané</div>
+            <div class="text-xs text-slate-400">Marketplace sécurisée & Paiement PayPal direct</div>
         </div>
     </div>
 
@@ -158,7 +151,6 @@
                     <label class="block text-xs font-medium text-slate-300 mb-1">Mot de passe</label>
                     <input type="password" id="login-password" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
                 </div>
-                <div id="login-error" class="hidden text-xs text-red-400">Email ou mot de passe incorrect.</div>
                 <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-lg text-sm transition">Se connecter</button>
             </form>
             <p class="text-xs text-center text-slate-400 mt-4">Pas encore de compte ? <a href="#" onclick="closeModal('login-modal'); openModal('register-modal'); return false;" class="text-amber-400 hover:underline">S'inscrire</a></p>
@@ -192,21 +184,30 @@
         </div>
     </div>
 
-    <!-- MODAL DE PAIEMENT PAYPAL -->
+    <!-- MODAL DE PAIEMENT PAYPAL DIRECT -->
     <div id="checkout-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 relative shadow-2xl space-y-4">
             <button onclick="closeModal('checkout-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            <h2 class="text-xl font-bold text-white mb-1">Finaliser la commande</h2>
-            <p class="text-xs text-slate-400 mb-4">Paiement sécurisé via PayPal</p>
+            <h2 class="text-xl font-bold text-white mb-1">Paiement PayPal Direct</h2>
+            <p class="text-xs text-slate-400">Le paiement sera envoyé vers le compte virement vendeur : <strong class="text-amber-400">linkinpark.666@outlook.com</strong></p>
             
-            <div id="checkout-summary" class="bg-slate-950 p-4 rounded-xl border border-slate-800 mb-6 space-y-2">
-                <!-- Injected via JS -->
+            <div id="checkout-summary" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <!-- Récapitulatif dynamique -->
             </div>
 
-            <!-- Conteneur des boutons PayPal -->
-            <div id="paypal-button-container" class="mt-4"></div>
+            <!-- Boutons PayPal officiels -->
+            <div id="paypal-button-container" class="pt-2"></div>
+
+            <!-- Option alternative PayPal Me directe -->
+            <div class="border-t border-slate-800 pt-3 text-center">
+                <p class="text-xs text-slate-500 mb-2">Ou effectuer le transfert manuel :</p>
+                <a id="paypal-me-btn" href="#" target="_blank" class="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg text-xs transition">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <span>Payer directement via PayPal.me</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -216,11 +217,11 @@
             <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
                 <i data-lucide="check" class="w-6 h-6"></i>
             </div>
-            <h2 class="text-xl font-bold text-white">Paiement Réussi !</h2>
-            <p class="text-xs text-slate-400">Merci pour votre achat via PayPal. Vos accès de compte ont été générés instantanément.</p>
+            <h2 class="text-xl font-bold text-white">Paiement Envoyé !</h2>
+            <p class="text-xs text-slate-400">Votre paiement a été dirigé vers <span class="text-amber-400 font-bold">linkinpark.666@outlook.com</span>. Vos accès de compte ont été générés ci-dessous.</p>
             
             <div id="account-credentials" class="bg-slate-950 border border-slate-800 p-4 rounded-xl text-left font-mono text-xs text-amber-400 space-y-1">
-                <!-- Credentials injected via JS -->
+                <!-- Identifiants injectés via JS -->
             </div>
 
             <button onclick="closeModal('success-modal')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm transition">
@@ -229,11 +230,12 @@
         </div>
     </div>
 
-    <!-- JavaScript Data & Logic -->
     <script>
         lucide.createIcons();
 
-        // Products Catalog
+        // Destinataire PayPal configuré
+        const PAYPAL_RECEIVER_EMAIL = "linkinpark.666@outlook.com";
+
         const products = [
             { id: 1, title: "1B CR | ALL CARS | WHEELSPIN HACK", tag: "Modded", seller: "WheelspinHouse", price: 1.79 },
             { id: 2, title: "ALL Cars 999M CR | UNLOCKED VIP", tag: "All Cars", seller: "SMURFVALORANT", price: 0.46 },
@@ -248,7 +250,6 @@
 
         let selectedProduct = null;
 
-        // Render Products
         function renderProducts(items) {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
@@ -275,7 +276,7 @@
                             <span class="text-lg font-bold text-white">€${product.price.toFixed(2)}</span>
                             <button onclick="startCheckout(${product.id})" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center space-x-1">
                                 <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
-                                <span>Acheter</span>
+                                <span>Acheter (PayPal)</span>
                             </button>
                         </div>
                     </div>
@@ -285,11 +286,9 @@
             lucide.createIcons();
         }
 
-        // Modal Helpers
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // User Profile & Authentication Logic
         function checkUserSession() {
             const user = JSON.parse(localStorage.getItem('elden_user'));
             if (user) {
@@ -307,8 +306,7 @@
             e.preventDefault();
             const username = document.getElementById('reg-username').value;
             const email = document.getElementById('reg-email').value;
-            const user = { username, email };
-            localStorage.setItem('elden_user', JSON.stringify(user));
+            localStorage.setItem('elden_user', JSON.stringify({ username, email }));
             closeModal('register-modal');
             checkUserSession();
         }
@@ -316,8 +314,7 @@
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
-            const user = { username: email.split('@')[0], email };
-            localStorage.setItem('elden_user', JSON.stringify(user));
+            localStorage.setItem('elden_user', JSON.stringify({ username: email.split('@')[0], email }));
             closeModal('login-modal');
             checkUserSession();
         }
@@ -331,7 +328,6 @@
             document.getElementById('user-dropdown').classList.toggle('hidden');
         }
 
-        // PayPal Checkout Logic
         function startCheckout(productId) {
             const user = localStorage.getItem('elden_user');
             if (!user) {
@@ -346,58 +342,63 @@
                     <span class="font-bold text-white">${selectedProduct.title}</span>
                 </div>
                 <div class="flex justify-between text-xs text-slate-300">
-                    <span>Vendeur:</span>
-                    <span class="text-slate-400">${selectedProduct.seller}</span>
+                    <span>Compte PayPal Vendeur:</span>
+                    <span class="text-amber-400 font-mono">${PAYPAL_RECEIVER_EMAIL}</span>
                 </div>
                 <hr class="border-slate-800 my-2">
                 <div class="flex justify-between text-sm font-bold text-amber-400">
-                    <span>Total:</span>
+                    <span>Montant total:</span>
                     <span>€${selectedProduct.price.toFixed(2)}</span>
                 </div>
             `;
 
+            // Lien manuel PayPal.me en cas de besoin
+            document.getElementById('paypal-me-btn').href = `https://www.paypal.com/paypalme/linkinpark666/${selectedProduct.price.toFixed(2)}EUR`;
+
             // Clear old buttons
             document.getElementById('paypal-button-container').innerHTML = '';
 
-            // Render PayPal Buttons
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: selectedProduct.price.toFixed(2)
-                            },
-                            description: selectedProduct.title
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        closeModal('checkout-modal');
-                        
-                        // Show success modal with credentials
-                        document.getElementById('account-credentials').innerHTML = `
-                            <div><strong>Compte :</strong> Forza Horizon 6 Modded</div>
-                            <div><strong>Login :</strong> fh6_${Math.floor(Math.random()*10000)}@outlook.com</div>
-                            <div><strong>Mot de passe :</strong> Pass_${Math.random().toString(36).slice(-8)}</div>
-                            <div><strong>ID Transaction PayPal :</strong> ${details.id}</div>
-                        `;
-                        openModal('success-modal');
-                    });
-                }
-            }).render('#paypal-button-container');
+            // Render SDK PayPal
+            if (window.paypal) {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                payee: {
+                                    email_address: PAYPAL_RECEIVER_EMAIL
+                                },
+                                amount: {
+                                    value: selectedProduct.price.toFixed(2)
+                                },
+                                description: `Achat Compte Forza Horizon 6 - ${selectedProduct.title}`
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            closeModal('checkout-modal');
+                            document.getElementById('account-credentials').innerHTML = `
+                                <div><strong>Statut :</strong> Payé à ${PAYPAL_RECEIVER_EMAIL}</div>
+                                <div><strong>Compte :</strong> Forza Horizon 6 Modded</div>
+                                <div><strong>Login :</strong> fh6_${Math.floor(Math.random()*10000)}@outlook.com</div>
+                                <div><strong>Mot de passe :</strong> Pass_${Math.random().toString(36).slice(-8)}</div>
+                                <div><strong>Transaction ID :</strong> ${details.id}</div>
+                            `;
+                            openModal('success-modal');
+                        });
+                    }
+                }).render('#paypal-button-container');
+            }
 
             openModal('checkout-modal');
         }
 
-        // Search Filter Listener
         document.getElementById('search-input').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             const filtered = products.filter(p => p.title.toLowerCase().includes(query) || p.seller.toLowerCase().includes(query));
             renderProducts(filtered);
         });
 
-        // Init
         renderProducts(products);
         checkUserSession();
     </script>
