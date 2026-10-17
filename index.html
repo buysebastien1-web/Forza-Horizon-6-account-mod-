@@ -125,7 +125,7 @@
                 </div>
             </aside>
 
-            <!-- Product Grid (Uniquement 2 offres) -->
+            <!-- Product Grid -->
             <div class="lg:col-span-3">
                 <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
             </div>
@@ -198,22 +198,14 @@
 
             <!-- Body Modal Scrollable -->
             <div class="p-6 overflow-y-auto space-y-6 text-sm text-slate-300">
-                <!-- Section WHAT YOU GET -->
+                <!-- Section WHAT YOU GET (Injecté dynamiquement selon l'offre) -->
                 <div class="bg-slate-950 border border-amber-500/20 rounded-xl p-4 space-y-3">
                     <div class="flex items-center space-x-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
                         <i data-lucide="gift" class="w-4 h-4"></i>
                         <span>WHAT YOU GET</span>
                     </div>
-                    <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
-                        <li><strong>1 Free Nickname Change</strong></li>
-                        <li>All Cars not available in the Autoshow tab to <strong>3 copies each</strong></li>
-                        <li>Barn Find, Treasure Cars, and Autoshow cars are to <strong>1 copy each</strong></li>
-                        <li><strong class="text-emerald-400">999,999,999 Credits</strong></li>
-                        <li><strong class="text-emerald-400">999,999,999 Super Wheelspin</strong></li>
-                        <li><strong class="text-emerald-400">999,999,999 Wheelspin</strong></li>
-                        <li><strong class="text-emerald-400">999,999,999 Car Mastery (Skill) Points</strong></li>
-                        <li><strong>8 Prestige 299 Level</strong></li>
-                        <li>100% completed account with nearly all available content unlocked. Every race, event, map activity, progression objective, XP board, fast travel board, and challenge has been completed. All in-game houses are owned, and all car horns, emotes, clothing items, outfits, and a wide range of other unlockable content are available</li>
+                    <ul id="what-you-get-list" class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
+                        <!-- Éléments injectés via JS -->
                     </ul>
                 </div>
 
@@ -322,21 +314,40 @@
 
         const PAYPAL_RECEIVER_EMAIL = "linkinpark.666@outlook.com";
 
-        // Uniquement les 2 offres sélectionnées
+        // Configuration des 2 offres avec détails personnalisés
         const products = [
             { 
                 id: 1, 
                 title: "100% Progress + All Cars + 999,999,999 each: CR & Super Wheelspin & Wheelspin & Car Mastery (Skill) Points", 
                 tag: "Modded", 
                 seller: "WheelspinHouse", 
-                price: 0.99 
+                price: 0.99,
+                whatYouGet: [
+                    "<strong>1 Free Nickname Change</strong>",
+                    "All Cars not available in the Autoshow tab to <strong>3 copies each</strong>",
+                    "Barn Find, Treasure Cars, and Autoshow cars are to <strong>1 copy each</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Credits</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Super Wheelspin</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Wheelspin</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Car Mastery (Skill) Points</strong>",
+                    "<strong>8 Prestige 299 Level</strong>",
+                    "100% completed account with nearly all available content unlocked. Every race, event, map activity, progression objective, XP board, fast travel board, and challenge has been completed. All in-game houses are owned, and all car horns, emotes, clothing items, outfits, and a wide range of other unlockable content are available"
+                ]
             },
             { 
                 id: 2, 
-                title: "ALL Cars 999M CR | UNLOCKED VIP", 
+                title: "All Cars + 999,999,999 each: Credits + Super Wheelspin + Wheelspin + Car Mastery (Skill) Points", 
                 tag: "All Cars", 
                 seller: "SMURFVALORANT", 
-                price: 0.46 
+                price: 0.46,
+                whatYouGet: [
+                    "<strong>1 Free Nickname Change</strong>",
+                    "<strong>All Cars</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Credits</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Super Wheelspin</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Wheelspin</strong>",
+                    "<strong class='text-emerald-400'>999,999,999 Car Mastery (Skill) Points</strong>"
+                ]
             }
         ];
 
@@ -434,10 +445,19 @@
             const selectedProduct = products.find(p => p.id === productId);
             document.getElementById('checkout-title').textContent = selectedProduct.title;
 
+            // Remplir dynamiquement la liste WHAT YOU GET
+            const whatYouGetContainer = document.getElementById('what-you-get-list');
+            whatYouGetContainer.innerHTML = '';
+            selectedProduct.whatYouGet.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = item;
+                whatYouGetContainer.appendChild(li);
+            });
+
             document.getElementById('checkout-summary').innerHTML = `
                 <div class="flex justify-between text-xs text-slate-300">
                     <span>Produit :</span>
-                    <span class="font-bold text-white">${selectedProduct.title}</span>
+                    <span class="font-bold text-white max-w-[280px] text-right truncate">${selectedProduct.title}</span>
                 </div>
                 <div class="flex justify-between text-xs text-slate-300">
                     <span>Destinataire PayPal :</span>
